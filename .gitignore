@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+__init__.py/
+
+# Virtual environment
+venv/
+
+# Database
+*.sqlite3
+
+# Media files
+images/
+
+# Logs
+*.log
+
+# Temporary files and scraped data
+temp/
+scraped_data/
+response.json/
+
+# IDE files
+.vscode/
+.idea/
+
+# Add any other project-specific ignores here
