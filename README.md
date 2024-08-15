@@ -45,7 +45,7 @@ This project is a Scrapy spider designed to scrape hotel information from Trip.c
 ## Usage
 To install require dependencies:
 ```
-pip install scrapy sqlalchemy psycopg2-binary
+pip install -r requirements.txt
 ```
 
 To run the spider, use the following command:
