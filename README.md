@@ -32,12 +32,12 @@ This project is a Scrapy spider designed to scrape hotel information from Trip.c
 1. Clone the repository:
    ```
    git clone https://github.com/YasinRafin01/Scrapy_Project.git
-   cd Scrapy_Project-main
+   cd trip_scraper
    ```
 
 2. Create a virtual environment and activate it:
    ```
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
    ```
 3. Set up your PostgreSQL database and update the connection details in `config.py`.
