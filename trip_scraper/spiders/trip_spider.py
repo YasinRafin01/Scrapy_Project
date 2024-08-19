@@ -3,7 +3,7 @@ import json
 import re
 import random
 from sqlalchemy.orm import sessionmaker
-from ..hotel_model import Hotel,engine
+from ..hotel_model import Hotel, engine
 import os
 import requests
 from urllib.parse import urljoin
@@ -18,7 +18,6 @@ class TripSpider(scrapy.Spider):
         self.Session = sessionmaker(bind=engine)
 
     def parse(self, response):
-        # Example of an AJAX request URL
         api_url = 'https://uk.trip.com/hotels/?locale=en-GB&curr=USD#ctm_ref=ih_h_6_1'  
 
         headers = {
@@ -64,8 +63,6 @@ class TripSpider(scrapy.Spider):
 
         if json_data:
             json_string = json_data.group(1)
-            # with open('response.json', 'w', encoding='utf-8') as f:
-            #    f.write(json_string)
             hotel_data = json.loads(json_string)
 
             all_sections = ['inboundCities', 'outboundCities', 'fiveStarHotels', 'cheapHotels', 'hostelHotels']
@@ -99,16 +96,16 @@ class TripSpider(scrapy.Spider):
             'latitude': hotel.get('lat'),
             'longitude': hotel.get('lon'),
             'rating': hotel.get('rating'),
-            'image_url': hotel.get('imgUrl'),
             'price': hotel.get('prices', {}).get('priceInfos', [{}])[0].get('price'),
             'city': city_name if city_name != 'N/A' else None,
             'section': section_name
         }
 
-        # Save image
-        image_url = f"https://ak-d.tripcdn.com/images{hotel_data.get('image_url')}"
+        # Save image and get local file path
+        image_url = f"https://ak-d.tripcdn.com/images{hotel.get('imgUrl')}"
         if image_url:
-            self.save_image(image_url, hotel_data['hotel_id'])     
+            local_image_path = self.save_image(image_url, hotel_data['hotel_id'])
+            hotel_data['image_url'] = local_image_path  # Store local file path instead of URL
 
         session = self.Session()
         try:
@@ -122,27 +119,25 @@ class TripSpider(scrapy.Spider):
         finally:
             session.close()
 
-
     def save_image(self, image_url, hotel_id):
-        # Define the directory to save images
         directory = 'images'
         if not os.path.exists(directory):
             os.makedirs(directory)
         
         try:
-            # Construct the full image URL and filename
             image_url = urljoin(self.start_urls[0], image_url)
             response = requests.get(image_url, stream=True)
-            response.raise_for_status()  # Check if the request was successful
+            response.raise_for_status()
             
-            # Create a filename for the image
             filename = os.path.join(directory, f'{hotel_id}.jpg')
             with open(filename, 'wb') as f:
                 f.write(response.content)
             
             self.logger.info(f"Image saved as: {filename}")
+            return filename  # Return the local file path
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Error downloading image {image_url}: {e}")
+            return None
 
 
 
