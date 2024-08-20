@@ -38,7 +38,7 @@ This project is a Scrapy spider designed to scrape hotel information from Trip.c
    ```
    python3 -m venv venv
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-   cd trip_scraper
+  
    ```
 3. Set up your PostgreSQL database and update the connection details in `config.py`.
    ```
@@ -54,6 +54,7 @@ pip install -r requirements.txt
 To run the spider, use the following command:
 
 ```
+cd trip_scraper
 scrapy crawl trip_spider
 ```
 
